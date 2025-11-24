@@ -1,0 +1,35 @@
+<!-- Modal para agregar/editar habilidades -->
+<div class="modal fade" id="agregarHabilidadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Habilidad</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formHabilidad" action="{{ url_for('dashboard.guardar_habilidad') }}" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" id="habilidadId" name="id">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre:</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="porcentaje" class="form-label">Porcentaje:</label>
+                        <input type="number" class="form-control" id="porcentaje" name="porcentaje" min="0" max="100" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo:</label>
+                        <select class="form-select" id="tipo" name="tipo" required>
+                            <option value="Técnica">Técnica</option>
+                            <option value="Blanda">Blanda</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

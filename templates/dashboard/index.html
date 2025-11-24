@@ -1,20 +1,227 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h1>Editar Portafolio</h1>
-<form method="POST" action="{{ url_for('dashboard.editar_banner') }}" enctype="multipart/form-data">
-    <div class="form-group">
-        <label for="nombre">Nombre:</label>
-        <input type="text" class="form-control" id="nombre" name="nombre" value="{{ datos.nombre }}">
+<div class="container my-5">
+    <h1 class="mb-4">Editar Portafolio</h1>
+
+    <!-- Nav tabs para seleccionar la sección a editar -->
+    <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="banner-tab" data-bs-toggle="tab" data-bs-target="#banner" type="button" role="tab">Banner</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="experiencia-tab" data-bs-toggle="tab" data-bs-target="#experiencia" type="button" role="tab">Experiencia</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="educacion-tab" data-bs-toggle="tab" data-bs-target="#educacion" type="button" role="tab">Educación</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="proyectos-tab" data-bs-toggle="tab" data-bs-target="#proyectos" type="button" role="tab">Proyectos</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="habilidades-tab" data-bs-toggle="tab" data-bs-target="#habilidades" type="button" role="tab">Habilidades</button>
+        </li>
+    </ul>
+
+    <!-- Contenido de las pestañas -->
+    <div class="tab-content" id="dashboardTabsContent">
+        <!-- Pestaña para editar el Banner -->
+        <div class="tab-pane fade show active" id="banner" role="tabpanel">
+            <form method="POST" action="{{ url_for('dashboard.editar_banner') }}" enctype="multipart/form-data" class="mb-5">
+                <h3 class="mb-4">Editar Banner</h3>
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input type="text" class="form-control" id="nombre" name="nombre" value="{{ datos_personales.nombre if datos_personales else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título:</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" value="{{ datos_personales.titulo if datos_personales else '' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ datos_personales.descripcion if datos_personales else '' }}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="banner_imagen" class="form-label">Imagen del Banner:</label>
+                    <input type="file" class="form-control" id="banner_imagen" name="banner_imagen">
+                    {% if datos_personales and datos_personales.banner_imagen %}
+                        <div class="mt-2">
+                            <img src="{{ url_for('static', filename=datos_personales.banner_imagen) }}" alt="Banner actual" style="max-width: 200px;">
+                        </div>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            </form>
+        </div>
+
+        <!-- Pestaña para editar Experiencia -->
+        <div class="tab-pane fade" id="experiencia" role="tabpanel">
+            <h3 class="mb-4">Editar Experiencia</h3>
+            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarExperienciaModal">
+                <i class="fas fa-plus me-2"></i> Agregar Experiencia
+            </button>
+            <div class="list-group">
+                {% for experiencia in experiencias %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ experiencia.puesto }} en {{ experiencia.empresa }}</h5>
+                            <p class="mb-1">
+                                {{ experiencia.fecha_inicio.strftime('%Y') }} -
+                                {% if experiencia.fecha_fin %}
+                                    {{ experiencia.fecha_fin.strftime('%Y') }}
+                                {% else %}
+                                    Actualidad
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-warning editar-experiencia" data-id="{{ experiencia.id }}" data-bs-toggle="modal" data-bs-target="#editarExperienciaModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form action="{{ url_for('dashboard.eliminar_experiencia', experiencia_id=experiencia.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pestaña para editar Educación -->
+        <div class="tab-pane fade" id="educacion" role="tabpanel">
+            <h3 class="mb-4">Editar Educación</h3>
+            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarEducacionModal">
+                <i class="fas fa-plus me-2"></i> Agregar Educación
+            </button>
+            <div class="list-group">
+                {% for educacion in educaciones %}
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">{{ educacion.titulo }} en {{ educacion.instituto }}</h5>
+                            <p class="mb-1">
+                                {{ educacion.fecha_inicio.strftime('%Y') }} -
+                                {% if educacion.fecha_fin %}
+                                    {{ educacion.fecha_fin.strftime('%Y') }}
+                                {% else %}
+                                    Actualidad
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-warning editar-educacion" data-id="{{ educacion.id }}" data-bs-toggle="modal" data-bs-target="#editarEducacionModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <form action="{{ url_for('dashboard.eliminar_educacion', educacion_id=educacion.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pestaña para editar Proyectos -->
+        <div class="tab-pane fade" id="proyectos" role="tabpanel">
+            <h3 class="mb-4">Editar Proyectos</h3>
+            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarProyectoModal">
+                <i class="fas fa-plus me-2"></i> Agregar Proyecto
+            </button>
+            <div class="row">
+                {% for proyecto in proyectos %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
+                            <img src="{{ url_for('static', filename=proyecto.imagen) }}" class="card-img-top" alt="{{ proyecto.nombre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ proyecto.nombre }}</h5>
+                                <p class="card-text">{{ proyecto.descripcion }}</p>
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ proyecto.enlace }}" class="btn btn-sm btn-primary" target="_blank">Ver Proyecto</a>
+                                    <div>
+                                        <button class="btn btn-sm btn-warning editar-proyecto" data-id="{{ proyecto.id }}" data-bs-toggle="modal" data-bs-target="#editarProyectoModal">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <form action="{{ url_for('dashboard.eliminar_proyecto', proyecto_id=proyecto.id) }}" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Pestaña para editar Habilidades -->
+        <div class="tab-pane fade" id="habilidades" role="tabpanel">
+            <h3 class="mb-4">Editar Habilidades</h3>
+            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarHabilidadModal">
+                <i class="fas fa-plus me-2"></i> Agregar Habilidad
+            </button>
+            <div class="row">
+                {% for habilidad in habilidades %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <div class="chart-container" style="position: relative; height:100px; width:100px; margin: 0 auto;">
+                                    <canvas class="habilidad-chart" data-porcentaje="{{ habilidad.porcentaje }}" data-nombre="{{ habilidad.nombre }}"></canvas>
+                                    <div class="chart-value">{{ habilidad.porcentaje }}%</div>
+                                </div>
+                                <h5 class="card-title mt-2">{{ habilidad.nombre }}</h5>
+                                <p class="card-text">{{ habilidad.tipo }}</p>
+                                <div>
+                                    <button class="btn btn-sm btn-warning editar-habilidad" data-id="{{ habilidad.id }}" data-bs-toggle="modal" data-bs-target="#editarHabilidadModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form action="{{ url_for('dashboard.eliminar_habilidad', habilidad_id=habilidad.id) }}" method="POST" style="display: inline;">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="titulo">Título:</label>
-        <input type="text" class="form-control" id="titulo" name="titulo" value="{{ datos.titulo }}">
-    </div>
-    <div class="form-group">
-        <label for="banner_imagen">Imagen del Banner:</label>
-        <input type="file" class="form-control-file" id="banner_imagen" name="banner_imagen">
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-</form>
+</div>
+
+<!-- Modales para agregar/editar elementos -->
+{% include 'modals/experiencia_modal.html' %}
+{% include 'modals/educacion_modal.html' %}
+{% include 'modals/proyecto_modal.html' %}
+{% include 'modals/habilidad_modal.html' %}
+
+<script>
+    // JavaScript para manejar los gráficos de habilidades
+    document.addEventListener('DOMContentLoaded', function() {
+        const charts = document.querySelectorAll('.habilidad-chart');
+        charts.forEach(canvas => {
+            const ctx = canvas.getContext('2d');
+            const porcentaje = parseInt(canvas.dataset.porcentaje);
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, -Math.PI / 2, (porcentaje / 100) * 2 * Math.PI - Math.PI / 2);
+            ctx.strokeStyle = '#007bff';
+            ctx.lineWidth = 8;
+            ctx.stroke();
+        });
+    });
+</script>
 {% endblock %}

@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS proyectos (
     descripcion TEXT,
     fecha DATE,
     enlace VARCHAR(255),
-    imagen VARCHAR(255)  -- Ruta o URL de la imagen del proyecto
+    imagen VARCHAR(255)
 );
 USE portafolio_db;
 
@@ -95,4 +95,26 @@ select * from datos_personales;
 select * from usuarios;
 SELECT * FROM usuarios WHERE username = 'Admin';
 UPDATE usuarios SET password = 'scrypt:32768:8:1$UeIpy3hmzCyDp8rY$2d2ae3a3c44e551e0d012632dea7cbaea1fbb46e3f878929787f4c1cb25da4b5fa6e001146041f774103152a893c1542be4a405d2ef890d6946527694d5d98ee' WHERE username = 'Admin';
+INSERT INTO experiencia (puesto, empresa, fecha_inicio, fecha_fin, descripcion, es_actual)
+VALUES
+('Desarrollador Full Stack Jr.', 'Tech Solutions', '2023-01-15', '2024-06-30', 'Desarrollo de aplicaciones web con Flask y SQLAlchemy. Participación en proyectos de migración de bases de datos.', FALSE),
+('Pasante de Desarrollo', 'Innovatech', '2022-05-01', '2022-12-31', 'Apoyo en el desarrollo de APIs RESTful y mantenimiento de bases de datos MySQL.', FALSE);
+
+INSERT INTO educacion (instituto, titulo, fecha_inicio, fecha_fin, descripcion)
+VALUES
+('Instituto Técnico Renault', 'Técnico en Programación', '2020-03-01', '2022-12-15', 'Formación en desarrollo de software y bases de datos.'),
+('Universidad Nacional', 'Ingeniería en Sistemas (en curso)', '2023-03-01', NULL, 'Cursando materias relacionadas con desarrollo web y bases de datos.');
+INSERT INTO educacion (instituto, titulo, fecha_inicio, fecha_fin, descripcion)
+VALUES
+('Instituto Técnico Renault', 'Técnico en Programación', '2020-03-01', '2022-12-15', 'Formación en desarrollo de software y bases de datos.'),
+('Universidad Nacional', 'Ingeniería en Sistemas (en curso)', '2023-03-01', NULL, 'Cursando materias relacionadas con desarrollo web y bases de datos.');
+
+INSERT INTO habilidades (nombre, porcentaje, tipo)
+VALUES
+('Python', 90, 'Técnica'),
+('Flask', 85, 'Técnica'),
+('SQL', 80, 'Técnica'),
+('JavaScript', 75, 'Técnica'),
+('Trabajo en Equipo', 95, 'Blanda'),
+('Comunicación', 90, 'Blanda');
 

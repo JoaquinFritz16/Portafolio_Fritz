@@ -76,23 +76,190 @@
         </div>
     </div>
 </section>
-<section id="experiencia" class="py-5">
-    <!-- Contenido de la sección -->
+<section id="experiencia" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Experiencia Laboral</h2>
+        {% if experiencias %}
+            {% for experiencia in experiencias %}
+                <div class="card mb-4 experiencia-item" data-id="{{ experiencia.id }}">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ experiencia.puesto }}</h4>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ experiencia.empresa }}</h6>
+                                <p class="card-text">
+                                    {{ experiencia.fecha_inicio.strftime('%Y') }} -
+                                    {% if experiencia.fecha_fin %}
+                                        {{ experiencia.fecha_fin.strftime('%Y') }}
+                                    {% else %}
+                                        Actualidad
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% if is_admin %}
+                                <div>
+                                    <button class="btn btn-sm btn-warning editar-experiencia" data-id="{{ experiencia.id }}" data-bs-toggle="modal" data-bs-target="#editarExperienciaModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger eliminar-experiencia" data-id="{{ experiencia.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p class="mt-3">{{ experiencia.descripcion }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No hay experiencias registradas.</p>
+        {% endif %}
+        {% if is_admin %}
+            <div class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarExperienciaModal">
+                    <i class="fas fa-plus me-2"></i> Agregar Experiencia
+                </button>
+            </div>
+        {% endif %}
+    </div>
 </section>
+
 
 <!-- Sección "Educación" -->
 <section id="educacion" class="py-5">
-    <!-- Contenido de la sección -->
+    <div class="container">
+        <h2 class="text-center mb-5">Educación</h2>
+        {% if educaciones %}
+            {% for educacion in educaciones %}
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">{{ educacion.titulo }}</h4>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ educacion.instituto }}</h6>
+                                <p class="card-text">
+                                    {{ educacion.fecha_inicio.strftime('%Y') }} -
+                                    {% if educacion.fecha_fin %}
+                                        {{ educacion.fecha_fin.strftime('%Y') }}
+                                    {% else %}
+                                        Actualidad
+                                    {% endif %}
+                                </p>
+                            </div>
+                            {% if is_admin %}
+                                <div>
+                                    <button class="btn btn-sm btn-warning editar-educacion" data-id="{{ educacion.id }}" data-bs-toggle="modal" data-bs-target="#editarEducacionModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger eliminar-educacion" data-id="{{ educacion.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p class="mt-3">{{ educacion.descripcion }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No hay educación registrada.</p>
+        {% endif %}
+        {% if is_admin %}
+            <div class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarEducacionModal">
+                    <i class="fas fa-plus me-2"></i> Agregar Educación
+                </button>
+            </div>
+        {% endif %}
+    </div>
 </section>
 
+
 <!-- Sección "Proyectos" -->
-<section id="proyectos" class="py-5">
-    <!-- Contenido de la sección -->
+<section id="proyectos" class="py-5 bg-light">
+    <div class="container">
+        <h2 class="text-center mb-5">Proyectos</h2>
+        <div class="row">
+            {% if proyectos %}
+                {% for proyecto in proyectos %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ url_for('static', filename=proyecto.imagen) }}" class="card-img-top" alt="{{ proyecto.nombre }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ proyecto.nombre }}</h5>
+                                <p class="card-text">{{ proyecto.descripcion }}</p>
+                                <p class="card-text"><small class="text-muted">{{ proyecto.fecha.strftime('%Y') }}</small></p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ proyecto.enlace }}" class="btn btn-sm btn-primary" target="_blank">Ver Proyecto</a>
+                                {% if is_admin %}
+                                    <button class="btn btn-sm btn-warning editar-proyecto" data-id="{{ proyecto.id }}" data-bs-toggle="modal" data-bs-target="#editarProyectoModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger eliminar-proyecto" data-id="{{ proyecto.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">No hay proyectos registrados.</p>
+            {% endif %}
+        </div>
+        {% if is_admin %}
+            <div class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarProyectoModal">
+                    <i class="fas fa-plus me-2"></i> Agregar Proyecto
+                </button>
+            </div>
+        {% endif %}
+    </div>
 </section>
+
 
 <!-- Sección "Habilidades" -->
 <section id="habilidades" class="py-5">
-    <!-- Contenido de la sección -->
+    <div class="container">
+        <h2 class="text-center mb-5">Habilidades</h2>
+        <div class="row">
+            {% if habilidades %}
+                {% for habilidad in habilidades %}
+                    <div class="col-md-6 col-lg-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <div class="chart-container" style="position: relative; height:150px; width:150px; margin: 0 auto;">
+                                    <canvas class="habilidad-chart" data-porcentaje="{{ habilidad.porcentaje }}" data-nombre="{{ habilidad.nombre }}"></canvas>
+                                    <div class="chart-value" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold;">{{ habilidad.porcentaje }}%</div>
+                                </div>
+                                <h5 class="card-title mt-3">{{ habilidad.nombre }}</h5>
+                                <p class="card-text">{{ habilidad.tipo }}</p>
+                                {% if is_admin %}
+                                    <button class="btn btn-sm btn-warning editar-habilidad" data-id="{{ habilidad.id }}" data-bs-toggle="modal" data-bs-target="#editarHabilidadModal">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger eliminar-habilidad" data-id="{{ habilidad.id }}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="text-center">No hay habilidades registradas.</p>
+            {% endif %}
+        </div>
+        {% if is_admin %}
+            <div class="text-center">
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#agregarHabilidadModal">
+                    <i class="fas fa-plus me-2"></i> Agregar Habilidad
+                </button>
+            </div>
+        {% endif %}
+    </div>
 </section>
+
 
 {% endblock %}

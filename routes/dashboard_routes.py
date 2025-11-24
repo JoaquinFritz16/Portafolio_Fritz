@@ -3,6 +3,10 @@ from flask_login import login_required, current_user
 from flask import Blueprint, render_template, request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 from models.datos_personales import DatosPersonales
+from models.educacion import Educacion
+from models.proyectos import Proyecto
+from models.habilidades import Habilidad
+from models.experiencia import Experiencia
 from extensions import db
 import os
 
@@ -49,4 +53,83 @@ def editar_banner():
             datos.banner_imagen = f'images/{filename}'
     db.session.commit()
     flash('Banner actualizado correctamente.', 'success')
+    return redirect(url_for('main.index'))
+
+@dashboard_bp.route('/guardar-experiencia', methods=['POST'])
+def guardar_experiencia():
+    experiencia_id = request.form.get('id')
+    if experiencia_id:
+        experiencia = Experiencia.query.get(experiencia_id)
+    else:
+        experiencia = Experiencia()
+
+    experiencia.puesto = request.form.get('puesto')
+    experiencia.empresa = request.form.get('empresa')
+    experiencia.fecha_inicio = request.form.get('fecha_inicio')
+    experiencia.fecha_fin = request.form.get('fecha_fin')
+    experiencia.descripcion = request.form.get('descripcion')
+    experiencia.es_actual = 'es_actual' in request.form
+
+    db.session.add(experiencia)
+    db.session.commit()
+    flash('Experiencia guardada correctamente.', 'success')
+    return redirect(url_for('main.index'))
+
+@dashboard_bp.route('/guardar-educacion', methods=['POST'])
+def guardar_educacion():
+    educacion_id = request.form.get('id')
+    if educacion_id:
+        educacion = Educacion.query.get(educacion_id)
+    else:
+        educacion = Educacion()
+
+    educacion.instituto = request.form.get('instituto')
+    educacion.titulo = request.form.get('titulo')
+    educacion.fecha_inicio = request.form.get('fecha_inicio')
+    educacion.fecha_fin = request.form.get('fecha_fin')
+    educacion.descripcion = request.form.get('descripcion')
+
+    db.session.add(educacion)
+    db.session.commit()
+    flash('Educación guardada correctamente.', 'success')
+    return redirect(url_for('main.index'))
+@dashboard_bp.route('/guardar-proyecto', methods=['POST'])
+def guardar_proyecto():
+    proyecto_id = request.form.get('id')
+    if proyecto_id:
+        proyecto = Proyecto.query.get(proyecto_id)
+    else:
+        proyecto = Proyecto()
+
+    proyecto.nombre = request.form.get('nombre')
+    proyecto.descripcion = request.form.get('descripcion')
+    proyecto.fecha = request.form.get('fecha')
+    proyecto.enlace = request.form.get('enlace')
+
+    if 'imagen' in request.files:
+        file = request.files['imagen']
+        if file.filename != '':
+            filename = f"proyecto_{proyecto.id or 'nuevo'}.jpg"
+            file.save(os.path.join('static/images', filename))
+            proyecto.imagen = f"images/{filename}"
+
+    db.session.add(proyecto)
+    db.session.commit()
+    flash('Proyecto guardado correctamente.', 'success')
+    return redirect(url_for('main.index'))
+@dashboard_bp.route('/guardar-habilidad', methods=['POST'])
+def guardar_habilidad():
+    habilidad_id = request.form.get('id')
+    if habilidad_id:
+        habilidad = Habilidad.query.get(habilidad_id)
+    else:
+        habilidad = Habilidad()
+
+    habilidad.nombre = request.form.get('nombre')
+    habilidad.porcentaje = request.form.get('porcentaje')
+    habilidad.tipo = request.form.get('tipo')
+
+    db.session.add(habilidad)
+    db.session.commit()
+    flash('Habilidad guardada correctamente.', 'success')
     return redirect(url_for('main.index'))

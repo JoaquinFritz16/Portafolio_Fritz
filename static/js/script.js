@@ -43,3 +43,28 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+document.addEventListener('DOMContentLoaded', function() {
+    // Renderizar gráficos de habilidades
+    const charts = document.querySelectorAll('.habilidad-chart');
+    charts.forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        const porcentaje = parseInt(canvas.dataset.porcentaje);
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 60;
+
+        // Dibujar círculo de fondo
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.strokeStyle = '#eee';
+        ctx.lineWidth = 10;
+        ctx.stroke();
+
+        // Dibujar círculo de progreso
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, -Math.PI / 2, (porcentaje / 100) * 2 * Math.PI - Math.PI / 2);
+        ctx.strokeStyle = '#007bff';
+        ctx.lineWidth = 10;
+        ctx.stroke();
+    });
+});
