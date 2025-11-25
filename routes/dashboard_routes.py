@@ -9,6 +9,9 @@ from models.habilidades import Habilidad
 from models.experiencia import Experiencia
 from extensions import db
 import os
+from datetime import datetime
+
+
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -20,7 +23,11 @@ def index():
         return redirect(url_for('main.index'))
     # Obtener los datos personales para mostrar en el formulario
     datos = DatosPersonales.query.first()
-    return render_template('dashboard/index.html', datos=datos)
+    experiencias = Experiencia.query.all()  # Asegúrate de que esta línea esté presente
+    educaciones = Educacion.query.all()
+    proyectos = Proyecto.query.all()
+    habilidades = Habilidad.query.all()
+    return render_template('dashboard/index.html', datos=datos, experiencias=experiencias, educaciones=educaciones, proyectos=proyectos, habilidades=habilidades)
 
 @dashboard_bp.route('/guardar-orden', methods=['POST'])
 @login_required
@@ -56,7 +63,12 @@ def editar_banner():
     return redirect(url_for('main.index'))
 
 @dashboard_bp.route('/guardar-experiencia', methods=['POST'])
+@login_required
 def guardar_experiencia():
+    if not current_user.es_admin:
+        flash('No tienes permisos para guardar experiencias.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
     experiencia_id = request.form.get('id')
     if experiencia_id:
         experiencia = Experiencia.query.get(experiencia_id)
@@ -65,15 +77,18 @@ def guardar_experiencia():
 
     experiencia.puesto = request.form.get('puesto')
     experiencia.empresa = request.form.get('empresa')
-    experiencia.fecha_inicio = request.form.get('fecha_inicio')
-    experiencia.fecha_fin = request.form.get('fecha_fin')
+    experiencia.fecha_inicio = datetime.strptime(request.form.get('fecha_inicio'), '%Y-%m-%d').date()
+    fecha_fin = request.form.get('fecha_fin')
+    experiencia.fecha_fin = datetime.strptime(fecha_fin, '%Y-%m-%d').date() if fecha_fin else None
     experiencia.descripcion = request.form.get('descripcion')
     experiencia.es_actual = 'es_actual' in request.form
 
     db.session.add(experiencia)
     db.session.commit()
     flash('Experiencia guardada correctamente.', 'success')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('dashboard.index'))
+
+
 
 @dashboard_bp.route('/guardar-educacion', methods=['POST'])
 def guardar_educacion():
@@ -93,6 +108,7 @@ def guardar_educacion():
     db.session.commit()
     flash('Educación guardada correctamente.', 'success')
     return redirect(url_for('main.index'))
+
 @dashboard_bp.route('/guardar-proyecto', methods=['POST'])
 def guardar_proyecto():
     proyecto_id = request.form.get('id')
@@ -117,8 +133,14 @@ def guardar_proyecto():
     db.session.commit()
     flash('Proyecto guardado correctamente.', 'success')
     return redirect(url_for('main.index'))
+
 @dashboard_bp.route('/guardar-habilidad', methods=['POST'])
+@login_required
 def guardar_habilidad():
+    if not current_user.es_admin:
+        flash('No tienes permisos para guardar habilidades.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
     habilidad_id = request.form.get('id')
     if habilidad_id:
         habilidad = Habilidad.query.get(habilidad_id)
@@ -126,10 +148,160 @@ def guardar_habilidad():
         habilidad = Habilidad()
 
     habilidad.nombre = request.form.get('nombre')
-    habilidad.porcentaje = request.form.get('porcentaje')
+    habilidad.porcentaje = int(request.form.get('porcentaje'))
     habilidad.tipo = request.form.get('tipo')
+    habilidad.icono = request.form.get('icono')
 
     db.session.add(habilidad)
     db.session.commit()
     flash('Habilidad guardada correctamente.', 'success')
-    return redirect(url_for('main.index'))
+    return redirect(url_for('dashboard.index'))
+
+@dashboard_bp.route('/eliminar-habilidad/<int:habilidad_id>', methods=['POST'])
+@login_required
+def eliminar_habilidad(habilidad_id):
+    if not current_user.es_admin:
+        flash('No tienes permisos para eliminar habilidades.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    habilidad = Habilidad.query.get(habilidad_id)
+    if habilidad:
+        db.session.delete(habilidad)
+        db.session.commit()
+        flash('Habilidad eliminada correctamente.', 'success')
+    else:
+        flash('Habilidad no encontrada.', 'danger')
+
+    return redirect(url_for('dashboard.index'))
+
+@dashboard_bp.route('/eliminar-experiencia/<int:experiencia_id>', methods=['POST'])
+@login_required
+def eliminar_experiencia(experiencia_id):
+
+    if not current_user.es_admin:
+        flash('No tienes permisos para eliminar experiencias.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    experiencia = Experiencia.query.get(experiencia_id)
+    if experiencia:
+        db.session.delete(experiencia)
+        db.session.commit()
+        flash('Experiencia eliminada correctamente.', 'success')
+    else:
+        flash('No se encontró la experiencia.', 'danger')
+
+    return redirect(url_for('dashboard.index'))
+
+
+@dashboard_bp.route('/eliminar-educacion/<int:educacion_id>', methods=['POST'])
+@login_required
+def eliminar_educacion(educacion_id):
+    if not current_user.es_admin:
+        flash('No tienes permisos para eliminar educación.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    educacion = Educacion.query.get(educacion_id)
+    if educacion:
+        db.session.delete(educacion)
+        db.session.commit()
+        flash('Educación eliminada correctamente.', 'success')
+    else:
+        flash('Educación no encontrada.', 'danger')
+
+    return redirect(url_for('dashboard.index'))
+
+@dashboard_bp.route('/eliminar-proyecto/<int:proyecto_id>', methods=['POST'])
+@login_required
+def eliminar_proyecto(proyecto_id):
+    if not current_user.es_admin:
+        flash('No tienes permisos para eliminar proyectos.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    proyecto = Proyecto.query.get(proyecto_id)
+    if proyecto:
+        db.session.delete(proyecto)
+        db.session.commit()
+        flash('Proyecto eliminado correctamente.', 'success')
+    else:
+        flash('Proyecto no encontrado.', 'danger')
+
+    return redirect(url_for('dashboard.index'))
+
+
+@dashboard_bp.route('/obtener-experiencia/<int:experiencia_id>', methods=['GET'])
+@login_required
+def obtener_experiencia(experiencia_id):
+    if not current_user.es_admin:
+        return jsonify({'error': 'No tienes permisos'}), 403
+
+    experiencia = Experiencia.query.get(experiencia_id)
+    if experiencia:
+        return jsonify({
+            'id': experiencia.id,
+            'puesto': experiencia.puesto,
+            'empresa': experiencia.empresa,
+            'fecha_inicio': experiencia.fecha_inicio.strftime('%Y-%m-%d') if experiencia.fecha_inicio else '',
+            'fecha_fin': experiencia.fecha_fin.strftime('%Y-%m-%d') if experiencia.fecha_fin else '',
+            'descripcion': experiencia.descripcion,
+            'es_actual': experiencia.es_actual
+        })
+    else:
+        return jsonify({'error': 'Experiencia no encontrada'}), 404
+
+
+@dashboard_bp.route('/obtener-habilidad/<int:habilidad_id>', methods=['GET'])
+@login_required
+def obtener_habilidad(habilidad_id):
+    if not current_user.es_admin:
+        return jsonify({'error': 'No tienes permisos'}), 403
+
+    habilidad = Habilidad.query.get(habilidad_id)
+    if habilidad:
+        return jsonify({
+            'id': habilidad.id,
+            'nombre': habilidad.nombre,
+            'porcentaje': habilidad.porcentaje,
+            'tipo': habilidad.tipo,
+            'icono': habilidad.icono
+        })
+    else:
+        return jsonify({'error': 'Habilidad no encontrada'}), 404
+
+@dashboard_bp.route('/obtener-proyecto/<int:proyecto_id>', methods=['GET'])
+@login_required
+def obtener_proyecto(proyecto_id):
+    if not current_user.es_admin:
+        return jsonify({'error': 'No tienes permisos'}), 403
+
+    proyecto = Proyecto.query.get(proyecto_id)
+    if proyecto:
+        return jsonify({
+            'id': proyecto.id,
+            'nombre': proyecto.nombre,
+            'descripcion': proyecto.descripcion,
+            'fecha': proyecto.fecha.strftime('%Y-%m-%d') if proyecto.fecha else '',
+            'enlace': proyecto.enlace,
+            'imagen': proyecto.imagen
+        })
+    else:
+        return jsonify({'error': 'Proyecto no encontrado'}), 404
+
+
+@dashboard_bp.route('/obtener-educacion/<int:educacion_id>', methods=['GET'])
+@login_required
+def obtener_educacion(educacion_id):
+    if not current_user.es_admin:
+        return jsonify({'error': 'No tienes permisos'}), 403
+
+    educacion = Educacion.query.get(educacion_id)
+    if educacion:
+        return jsonify({
+            'id': educacion.id,
+            'instituto': educacion.instituto,
+            'titulo': educacion.titulo,
+            'fecha_inicio': educacion.fecha_inicio.strftime('%Y-%m-%d') if educacion.fecha_inicio else '',
+            'fecha_fin': educacion.fecha_fin.strftime('%Y-%m-%d') if educacion.fecha_fin else '',
+            'descripcion': educacion.descripcion
+        })
+    else:
+        return jsonify({'error': 'Educación no encontrada'}), 404

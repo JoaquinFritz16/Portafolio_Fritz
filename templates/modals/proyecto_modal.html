@@ -1,4 +1,3 @@
-<!-- Modal para agregar/editar proyectos -->
 <div class="modal fade" id="agregarProyectoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,7 +5,7 @@
                 <h5 class="modal-title">Agregar Proyecto</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formProyecto" action="{{ url_for('dashboard.guardar_proyecto') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ url_for('dashboard.guardar_proyecto') }}" method="POST" enctype="multipart/form-data">
                 <div class="modal-body">
                     <input type="hidden" id="proyectoId" name="id">
                     <div class="mb-3">

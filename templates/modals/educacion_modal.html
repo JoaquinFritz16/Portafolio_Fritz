@@ -1,4 +1,3 @@
-<!-- Modal para agregar/editar educación -->
 <div class="modal fade" id="agregarEducacionModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,16 +5,16 @@
                 <h5 class="modal-title">Agregar Educación</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="formEducacion" action="{{ url_for('dashboard.guardar_educacion') }}" method="POST">
+            <form action="{{ url_for('dashboard.guardar_educacion') }}" method="POST">
                 <div class="modal-body">
                     <input type="hidden" id="educacionId" name="id">
                     <div class="mb-3">
-                        <label for="titulo" class="form-label">Título:</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" required>
-                    </div>
-                    <div class="mb-3">
                         <label for="instituto" class="form-label">Instituto:</label>
                         <input type="text" class="form-control" id="instituto" name="instituto" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="titulo" class="form-label">Título:</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
                     </div>
                     <div class="mb-3">
                         <label for="fecha_inicio" class="form-label">Fecha de Inicio:</label>

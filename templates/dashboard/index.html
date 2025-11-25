@@ -78,10 +78,11 @@
                                 <i class="fas fa-edit"></i>
                             </button>
                             <form action="{{ url_for('dashboard.eliminar_experiencia', experiencia_id=experiencia.id) }}" method="POST" style="display: inline;">
-                                <button type="submit" class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+    <button type="submit" class="btn btn-sm btn-danger">
+        <i class="fas fa-trash"></i>
+    </button>
+</form>
+
                         </div>
                     </div>
                 {% endfor %}
@@ -158,38 +159,54 @@
         </div>
 
         <!-- Pestaña para editar Habilidades -->
-        <div class="tab-pane fade" id="habilidades" role="tabpanel">
-            <h3 class="mb-4">Editar Habilidades</h3>
-            <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarHabilidadModal">
-                <i class="fas fa-plus me-2"></i> Agregar Habilidad
-            </button>
-            <div class="row">
-                {% for habilidad in habilidades %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <div class="chart-container" style="position: relative; height:100px; width:100px; margin: 0 auto;">
-                                    <canvas class="habilidad-chart" data-porcentaje="{{ habilidad.porcentaje }}" data-nombre="{{ habilidad.nombre }}"></canvas>
-                                    <div class="chart-value">{{ habilidad.porcentaje }}%</div>
-                                </div>
-                                <h5 class="card-title mt-2">{{ habilidad.nombre }}</h5>
-                                <p class="card-text">{{ habilidad.tipo }}</p>
-                                <div>
-                                    <button class="btn btn-sm btn-warning editar-habilidad" data-id="{{ habilidad.id }}" data-bs-toggle="modal" data-bs-target="#editarHabilidadModal">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <form action="{{ url_for('dashboard.eliminar_habilidad', habilidad_id=habilidad.id) }}" method="POST" style="display: inline;">
-                                        <button type="submit" class="btn btn-sm btn-danger">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
+    <div class="tab-pane fade" id="habilidades" role="tabpanel">
+    <h3 class="mb-4">Editar Habilidades</h3>
+
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarHabilidadModal">
+        <i class="fas fa-plus me-2"></i> Agregar Habilidad
+    </button>
+
+    <div class="row">
+        {% for habilidad in habilidades %}
+            <div class="col-md-4 mb-3">
+                <div class="card text-center h-100">
+                    <div class="card-body">
+
+                        <div class="chart-container hab-chart">
+                            <canvas class="habilidad-chart"
+                                    data-porcentaje="{{ habilidad.porcentaje }}"
+                                    data-nombre="{{ habilidad.nombre }}">
+                            </canvas>
+                            <div class="chart-value">{{ habilidad.porcentaje }}%</div>
                         </div>
+
+                        <h5 class="card-title mt-3">{{ habilidad.nombre }}</h5>
+                        <p class="card-text">{{ habilidad.tipo }}</p>
+
+                        <div>
+                            <button class="btn btn-sm btn-warning editar-habilidad"
+                                    data-id="{{ habilidad.id }}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editarHabilidadModal">
+                                <i class="fas fa-edit"></i>
+                            </button>
+
+                            <form action="{{ url_for('dashboard.eliminar_habilidad', habilidad_id=habilidad.id) }}"
+                                method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
-                {% endfor %}
+                </div>
             </div>
-        </div>
+        {% endfor %}
+    </div>
+</div>
+
     </div>
 </div>
 
