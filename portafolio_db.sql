@@ -119,3 +119,11 @@ ALTER TABLE habilidades ADD COLUMN icono VARCHAR(255);
 
 SELECT * FROM habilidades;
 select * from usuarios;
+UPDATE usuarios
+SET password = 'scrypt:32768:8:1$T30qTFZ9ta2XmBFV$47f0e804d9a1379b8bd3869e47313f41a3985712c8723bcf188e9d922884cfda990bbdefd4ba3e6a5f008fa950a0c9c06cf0bf16596c722329d48fcc15cec938'
+WHERE username = 'Admin';
+DESCRIBE experiencia;
+select * from experiencia;
+DESCRIBE datos_personales;
+UPDATE datos_personales SET foto_perfil = 'images/joaco_fritz.jpg' WHERE id = 1;
+

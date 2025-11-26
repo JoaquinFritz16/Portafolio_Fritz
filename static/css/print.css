@@ -1,0 +1,25 @@
+body {
+    background-color: white;
+    color: black;
+}
+
+.banner {
+    background: none !important;
+}
+
+.navbar {
+    display: none;
+}
+
+footer {
+    display: none;
+}
+
+.card {
+    border: 1px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.btn {
+    display: none;
+}

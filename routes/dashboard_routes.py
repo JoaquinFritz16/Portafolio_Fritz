@@ -27,7 +27,8 @@ def index():
     educaciones = Educacion.query.all()
     proyectos = Proyecto.query.all()
     habilidades = Habilidad.query.all()
-    return render_template('dashboard/index.html', datos=datos, experiencias=experiencias, educaciones=educaciones, proyectos=proyectos, habilidades=habilidades)
+    
+    return render_template('dashboard/index.html', datos=datos, experiencias=experiencias, educaciones=educaciones, proyectos=proyectos, habilidades=habilidades, is_admin=current_user.es_admin)
 
 @dashboard_bp.route('/guardar-orden', methods=['POST'])
 @login_required
@@ -305,3 +306,25 @@ def obtener_educacion(educacion_id):
         })
     else:
         return jsonify({'error': 'Educación no encontrada'}), 404
+
+@dashboard_bp.route('/editar-foto-perfil', methods=['POST'])
+@login_required
+def editar_foto_perfil():
+    if not current_user.es_admin:
+        flash('No tienes permisos para editar la foto de perfil.', 'danger')
+        return redirect(url_for('dashboard.index'))
+
+    datos = DatosPersonales.query.first()
+    if not datos:
+        datos = DatosPersonales()
+
+    if 'foto_perfil' in request.files:
+        file = request.files['foto_perfil']
+        if file.filename != '':
+            filename = 'joaco_fritz.jpg'
+            file.save(os.path.join(current_app.root_path, 'static/images', filename))
+            datos.foto_perfil = f'images/{filename}'
+
+    db.session.commit()
+    flash('Foto de perfil actualizada correctamente.', 'success')
+    return redirect(url_for('dashboard.index'))

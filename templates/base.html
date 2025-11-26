@@ -10,6 +10,7 @@
     <title>{% block title %}Mi Portafolio{% endblock %}</title>
 
     <!-- Google Fonts: Poppins y Roboto -->
+    {% if not export_mode %}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
@@ -28,6 +29,8 @@
     <!-- En el <head> -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+{% endif %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}" media="print">
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.js"></script>
 
@@ -128,41 +131,66 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Sección de contacto con iframe (ejemplo: mapa de Google) -->
-    <section id="contacto" class="bg-light py-5">
-        <div class="container">
-            <h2 class="text-center mb-4">Contáctame</h2>
-            <div class="row">
-                <div class="col-lg-6">
-                    <form>
-                        <div class="mb-3">
-                            <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="nombre" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="mensaje" class="form-label">Mensaje</label>
-                            <textarea class="form-control" id="mensaje" rows="3" required></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane me-2"></i> Enviar
-                        </button>
-                    </form>
-                </div>
-                <div class="col-lg-6">
-                    <!-- Iframe con mapa de Google (ejemplo) -->
-                    <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3284.047693247284!2d-58.38162642426672!3d-34.6037387747903!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bccaf5dae8a1f7%3A0x5a2f8b6f3f9a3a8!2sObelisco!5e0!3m2!1ses!2sar!4v1620000000000!5m2!1ses!2sar"
-                        width="100%"
-                        height="300"
-                        style="border:0;"
-                        allowfullscreen=""
-                        loading="lazy">
-                    </iframe>
-                </div>
+  <!-- Sección de contacto -->
+<section id="contacto" class="bg-light py-5">
+    <div class="container">
+        <h2 class="text-center mb-4">Contáctame</h2>
+        <div class="row">
+            <!-- FORMULARIO DE CONTACTO -->
+            <div class="col-lg-6">
+                <form action="https://formsubmit.co/d48125437@alumnos.itr.edu.ar" method="POST">
+
+                    <!-- Sin captcha -->
+                    <input type="hidden" name="_captcha" value="false">
+
+                    <!-- Redirección después de enviar -->
+                    <input type="hidden" name="_next" value="https://tu-dominio.com/gracias">
+
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="mensaje" class="form-label">Mensaje</label>
+                        <textarea class="form-control" id="mensaje" name="mensaje" rows="3" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane me-2"></i> Enviar
+                    </button>
+                </form>
+            </div>
+
+            <!-- MAPA DE GOOGLE (LA BOMBONERA) -->
+            <div class="col-lg-6">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3283.3555190295127!2d-58.36798012426592!3d-34.63585207329553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95a334b7bddeb2f7%3A0xaea0aeed8f2fa2a!2sEstadio%20Alberto%20J.%20Armando%20(La%20Bombonera)!5e0!3m2!1ses!2sar!4v1732573999000!5m2!1ses!2sar"
+                    width="100%"
+                    height="300"
+                    style="border:0;"
+                    allowfullscreen=""
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+                <div class="text-center my-4">
+    <a href="{{ url_for('main.descargar_pdf') }}" class="btn btn-primary me-2">
+        <i class="fas fa-file-pdf me-2"></i> Descargar como PDF
+    </a>
+    <a href="{{ url_for('main.descargar_imagen') }}" class="btn btn-secondary">
+        <i class="fas fa-file-image me-2"></i> Descargar como Imagen
+    </a>
+</div>
+
             </div>
         </div>
     </section>

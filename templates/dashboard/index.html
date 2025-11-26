@@ -27,6 +27,22 @@
         <!-- Pestaña para editar el Banner -->
         <div class="tab-pane fade show active" id="banner" role="tabpanel">
             <form method="POST" action="{{ url_for('dashboard.editar_banner') }}" enctype="multipart/form-data" class="mb-5">
+                <hr class="my-4">
+<h3 class="mb-3">Foto de Perfil</h3>
+
+<div class="text-center mb-3">
+    <img src="{{ url_for('static', filename=datos_personales.foto_perfil) if datos_personales and datos_personales.foto_perfil else url_for('static', filename='images/joaco_fritz.jpg') }}"
+         alt="Foto de perfil"
+         class="img-fluid rounded-circle"
+         style="max-width: 200px;">
+</div>
+
+{% if is_admin %}
+    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editarFotoModal">
+    <i class="fas fa-edit me-2"></i> Editar Foto
+</button>
+{% endif %}
+
                 <h3 class="mb-4">Editar Banner</h3>
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre:</label>
@@ -49,6 +65,7 @@
                         </div>
                     {% endif %}
                 </div>
+                
                 <button type="submit" class="btn btn-primary">Guardar cambios</button>
             </form>
         </div>
@@ -215,6 +232,8 @@
 {% include 'modals/educacion_modal.html' %}
 {% include 'modals/proyecto_modal.html' %}
 {% include 'modals/habilidad_modal.html' %}
+{% include 'modals/foto_perfil_modal.html' %}
+
 
 <script>
     // JavaScript para manejar los gráficos de habilidades
