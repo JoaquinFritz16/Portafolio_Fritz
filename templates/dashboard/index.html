@@ -3,7 +3,7 @@
 <div class="container my-5">
     <h1 class="mb-4">Editar Portafolio</h1>
 
-    <!-- Nav tabs para seleccionar la sección a editar -->
+
     <ul class="nav nav-tabs mb-4" id="dashboardTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="banner-tab" data-bs-toggle="tab" data-bs-target="#banner" type="button" role="tab">Banner</button>
@@ -24,7 +24,7 @@
 
     <!-- Contenido de las pestañas -->
     <div class="tab-content" id="dashboardTabsContent">
-        <!-- Pestaña para editar el Banner -->
+    
         <div class="tab-pane fade show active" id="banner" role="tabpanel">
             <form method="POST" action="{{ url_for('dashboard.editar_banner') }}" enctype="multipart/form-data" class="mb-5">
                 <hr class="my-4">
@@ -32,9 +32,9 @@
 
 <div class="text-center mb-3">
     <img src="{{ url_for('static', filename=datos_personales.foto_perfil) if datos_personales and datos_personales.foto_perfil else url_for('static', filename='images/joaco_fritz.jpg') }}"
-         alt="Foto de perfil"
-         class="img-fluid rounded-circle"
-         style="max-width: 200px;">
+            alt="Foto de perfil"
+            class="img-fluid rounded-circle"
+            style="max-width: 200px;">
 </div>
 
 {% if is_admin %}
@@ -70,7 +70,6 @@
             </form>
         </div>
 
-        <!-- Pestaña para editar Experiencia -->
         <div class="tab-pane fade" id="experiencia" role="tabpanel">
             <h3 class="mb-4">Editar Experiencia</h3>
             <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarExperienciaModal">
@@ -106,7 +105,7 @@
             </div>
         </div>
 
-        <!-- Pestaña para editar Educación -->
+
         <div class="tab-pane fade" id="educacion" role="tabpanel">
             <h3 class="mb-4">Editar Educación</h3>
             <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarEducacionModal">
@@ -141,7 +140,6 @@
             </div>
         </div>
 
-        <!-- Pestaña para editar Proyectos -->
         <div class="tab-pane fade" id="proyectos" role="tabpanel">
             <h3 class="mb-4">Editar Proyectos</h3>
             <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#agregarProyectoModal">
@@ -175,7 +173,6 @@
             </div>
         </div>
 
-        <!-- Pestaña para editar Habilidades -->
     <div class="tab-pane fade" id="habilidades" role="tabpanel">
     <h3 class="mb-4">Editar Habilidades</h3>
 
@@ -236,7 +233,6 @@
 
 
 <script>
-    // JavaScript para manejar los gráficos de habilidades
     document.addEventListener('DOMContentLoaded', function() {
         const charts = document.querySelectorAll('.habilidad-chart');
         charts.forEach(canvas => {

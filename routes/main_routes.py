@@ -1,26 +1,16 @@
-from flask import (
-    Blueprint, render_template, request, redirect,
-    url_for, flash, send_file, current_app
-)
+from flask import Blueprint, render_template, request, redirect, url_for, flash, send_file, current_app
 from flask_login import current_user
-
-# Modelos
 from models.datos_personales import DatosPersonales
 from models.educacion import Educacion
 from models.experiencia import Experiencia
 from models.proyectos import Proyecto
 from models.habilidades import Habilidad
-
-# Librerías externas
 import pdfkit
 import imgkit
 import os
 
 main_bp = Blueprint('main', __name__)
 
-# ----------------------------
-# CONFIGURACIÓN WKHTMLTOPDF
-# ----------------------------
 WKHTMLTOPDF_PATH = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe"
 WKHTMLTOIMAGE_PATH = r"C:\Program Files\wkhtmltopdf\bin\wkhtmltoimage.exe"
 
@@ -40,11 +30,6 @@ IMG_OPTIONS = {
     'load-error-handling': 'ignore',
     'load-media-error-handling': 'ignore'
 }
-
-
-# ----------------------------
-# RUTA PRINCIPAL
-# ----------------------------
 @main_bp.route('/')
 def index():
     return render_template(
@@ -58,9 +43,6 @@ def index():
     )
 
 
-# ----------------------------
-# DESCARGAR IMAGEN
-# ----------------------------
 @main_bp.route('/descargar-imagen')
 def descargar_imagen():
     html_render = _render_portfolio_to_html()
@@ -81,9 +63,6 @@ def descargar_imagen():
     return send_file(output_img, as_attachment=True)
 
 
-# ----------------------------
-# DESCARGAR PDF
-# ----------------------------
 @main_bp.route('/descargar-pdf')
 def descargar_pdf():
     html_render = _render_portfolio_to_html()
@@ -104,11 +83,8 @@ def descargar_pdf():
     return send_file(output_pdf, as_attachment=True)
 
 
-# ----------------------------
-# FUNCIÓN AUXILIAR
-# ----------------------------
 def _render_portfolio_to_html():
-    """Renderiza el HTML con rutas absolutas para wkhtmltopdf."""
+
 
     html = render_template(
         'index.html',
@@ -121,11 +97,10 @@ def _render_portfolio_to_html():
         export_mode=True
     )
 
-    # ---- Convertir /static/... a file:///C:/ruta... ----
     static_path = os.path.join(current_app.root_path, "static").replace("\\", "/")
     html = html.replace('/static/', f'file:///{static_path}/')
 
-    # ---- Quitar CDNs que wkhtmltopdf NO soporta ----
+
     html = html.replace(
         'https://cdn.jsdelivr.net/npm/sortablejs@1.14.0/Sortable.min.css',
         ''

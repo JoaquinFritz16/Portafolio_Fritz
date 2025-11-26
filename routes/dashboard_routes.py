@@ -15,15 +15,15 @@ from datetime import datetime
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
-@dashboard_bp.route('/')  # Ruta principal del dashboard
+@dashboard_bp.route('/') 
 @login_required
 def index():
     if not current_user.es_admin:
         flash('No tienes permisos para acceder al dashboard.', 'danger')
         return redirect(url_for('main.index'))
-    # Obtener los datos personales para mostrar en el formulario
+    
     datos = DatosPersonales.query.first()
-    experiencias = Experiencia.query.all()  # Asegúrate de que esta línea esté presente
+    experiencias = Experiencia.query.all()
     educaciones = Educacion.query.all()
     proyectos = Proyecto.query.all()
     habilidades = Habilidad.query.all()
